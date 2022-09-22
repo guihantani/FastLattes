@@ -38,13 +38,39 @@ def generate_works_per_year_graphic(researchers):
         index = unique_all_works_per_year.index(x)
         all_works_per_year_count[index] += 1
 
-    fig, ax = plt.subplots(figsize=(len(unique_all_works_per_year), max(all_works_per_year_count) - 3))
+    fig, ax = plt.subplots(figsize=(len(unique_all_works_per_year), max(all_works_per_year_count)))
     ax.bar(unique_all_works_per_year, all_works_per_year_count, edgecolor="black")
     for i in range(len(unique_all_works_per_year)):
         ax.text(i, all_works_per_year_count[i], all_works_per_year_count[i], ha="center")
 
     plt.xlabel('Anos')
     plt.ylabel('Número de Trabalhos')
+
+    return fig
+
+def generate_articles_per_year_graphic(researchers):
+    all_articles_year = np.array(extract_all_articles_years(researchers))
+    all_articles_year.sort()
+
+    unique_all_articles_per_year = []
+    all_articles_per_year_count = []
+
+    for x in all_articles_year:
+        if x not in unique_all_articles_per_year:
+            unique_all_articles_per_year.append(x)
+            all_articles_per_year_count.append(0)
+
+    for x in all_articles_year:
+        index = unique_all_articles_per_year.index(x)
+        all_articles_per_year_count[index] += 1
+
+    fig, ax = plt.subplots(figsize=(len(unique_all_articles_per_year), max(all_articles_per_year_count)))
+    ax.bar(unique_all_articles_per_year, all_articles_per_year_count, edgecolor="black")
+    for i in range(len(unique_all_articles_per_year)):
+        ax.text(i, all_articles_per_year_count[i], all_articles_per_year_count[i], ha="center")
+
+    plt.xlabel('Anos')
+    plt.ylabel('Número de Artigos')
 
     return fig
 
@@ -59,8 +85,22 @@ def extract_all_citations(researchers):
 def extract_all_works_years(researchers):
     all_works_years_names = []
 
-    for researcher in researchers:
-        all_works_years_names = all_works_years_names + researcher.works_years
+    if isinstance(researchers, list):
+            for researcher in researchers:
+                all_works_years_names = all_works_years_names + researcher.works_years
+    else:
+        all_works_years_names = researchers.works_years
 
     return all_works_years_names
+
+def extract_all_articles_years(researchers):
+    all_articles_years_names = []
+
+    if isinstance(researchers, list):
+            for researcher in researchers:
+                all_articles_years_names = all_articles_years_names + researcher.articles
+    else:
+        all_articles_years_names = researchers.articles
+
+    return all_articles_years_names
 
