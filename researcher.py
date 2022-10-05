@@ -3,8 +3,9 @@ class Researcher:
     self.name = root.find('DADOS-GERAIS').attrib['NOME-COMPLETO']
     self.works_years = []
     self.articles = []
-    self.board = []
-    self.board_quantity = []
+    #self.board = []
+    #self.board_quantity = []
+    self.board = {'Bancas de Mestrado': [], 'Bancas de Tese de Doutorado': [] ,'Bancas de Qualificação de Doutorado': [], 'Bancas de Graduação': []}
     self.completed_orientations = []
     self.in_progress_orientations = []
     self.orcid = None
@@ -49,39 +50,19 @@ class Researcher:
     if root.find('DADOS-COMPLEMENTARES').find('PARTICIPACAO-EM-BANCA-TRABALHOS-CONCLUSAO') != None:
       if root.find('DADOS-COMPLEMENTARES').find('PARTICIPACAO-EM-BANCA-TRABALHOS-CONCLUSAO').find('PARTICIPACAO-EM-BANCA-DE-MESTRADO') != None:
         for participation_board in root.find('DADOS-COMPLEMENTARES').find('PARTICIPACAO-EM-BANCA-TRABALHOS-CONCLUSAO').findall('PARTICIPACAO-EM-BANCA-DE-MESTRADO'):
-          if 'Bancas de Mestrado' in self.board:
-            self.board_quantity[self.board.index('Bancas de Mestrado')] += 1
-
-          else:
-            self.board.append('Bancas de Mestrado')
-            self.board_quantity.append(1)
+          self.board['Bancas de Mestrado'].append(participation_board.find('DADOS-BASICOS-DA-PARTICIPACAO-EM-BANCA-DE-MESTRADO').attrib['ANO'])
 
       if root.find('DADOS-COMPLEMENTARES').find('PARTICIPACAO-EM-BANCA-TRABALHOS-CONCLUSAO').find('PARTICIPACAO-EM-BANCA-DE-DOUTORADO') != None:
         for participation_board in root.find('DADOS-COMPLEMENTARES').find('PARTICIPACAO-EM-BANCA-TRABALHOS-CONCLUSAO').findall('PARTICIPACAO-EM-BANCA-DE-DOUTORADO'):
-          if 'Bancas de Doutorado' in self.board:
-            self.board_quantity[self.board.index('Bancas de Doutorado')] += 1
-
-          else:
-            self.board.append('Bancas de Doutorado')
-            self.board_quantity.append(1)
+          self.board['Bancas de Tese de Doutorado'].append(participation_board.find('DADOS-BASICOS-DA-PARTICIPACAO-EM-BANCA-DE-DOUTORADO').attrib['ANO'])
 
       if root.find('DADOS-COMPLEMENTARES').find('PARTICIPACAO-EM-BANCA-TRABALHOS-CONCLUSAO').find('PARTICIPACAO-EM-BANCA-DE-EXAME-QUALIFICACAO') != None:
         for participation_board in root.find('DADOS-COMPLEMENTARES').find('PARTICIPACAO-EM-BANCA-TRABALHOS-CONCLUSAO').findall('PARTICIPACAO-EM-BANCA-DE-EXAME-QUALIFICACAO'):
-          if 'Bancas de Exame de Qualificação' in self.board:
-            self.board_quantity[self.board.index('Bancas de Exame de Qualificação')] += 1
-
-          else:
-            self.board.append('Bancas de Exame de Qualificação')
-            self.board_quantity.append(1)
+          self.board['Bancas de Qualificação de Doutorado'].append(participation_board.find('DADOS-BASICOS-DA-PARTICIPACAO-EM-BANCA-DE-EXAME-QUALIFICACAO').attrib['ANO'])
 
       if root.find('DADOS-COMPLEMENTARES').find('PARTICIPACAO-EM-BANCA-TRABALHOS-CONCLUSAO').find('PARTICIPACAO-EM-BANCA-DE-GRADUACAO') != None:
         for participation_board in root.find('DADOS-COMPLEMENTARES').find('PARTICIPACAO-EM-BANCA-TRABALHOS-CONCLUSAO').findall('PARTICIPACAO-EM-BANCA-DE-GRADUACAO'):
-          if 'Bancas de Graduação' in self.board:
-            self.board_quantity[self.board.index('Bancas de Graduação')] += 1
-
-          else:
-            self.board.append('Bancas de Graduação')
-            self.board_quantity.append(1)
+          self.board['Bancas de Graduação'].append(participation_board.find('DADOS-BASICOS-DA-PARTICIPACAO-EM-BANCA-DE-GRADUACAO').attrib['ANO'])
 
     # Completed Orientations
     if root.find('OUTRA-PRODUCAO').find('ORIENTACOES-CONCLUIDAS') != None:

@@ -4,6 +4,9 @@ from zipfile import ZipFile
 from researcher import Researcher
 import matplotlib.pyplot as plt
 import numpy as np
+from collections import defaultdict
+from itertools import chain
+from operator import methodcaller
 
 def initialize_researchers(path):
     name_of_all_zip_files = os.listdir(path + '/.')
@@ -99,23 +102,46 @@ def generate_articles_per_year_graphic(researchers):
 
     return fig
 
-def generate_boards_piechart(researchers):
-    all_board_names = ['Bancas de Mestrado', 'Bancas de Doutorado', 'Bancas de Exame de Qualificação', 'Bancas de Graduação']
-    all_board_counts = extract_all_board_quantities(researchers)
+def generate_boards_piechart(researchers, min_year, max_year):
+    all_board_names = ['Bancas de Mestrado', 'Bancas de Tese de Doutorado', 'Bancas de Qualificação de Doutorado', 'Bancas de Graduação']
+    all_boards = extract_all_boards(researchers)
+    aux_all_boards = {'Bancas de Mestrado': [], 'Bancas de Tese de Doutorado': [] ,'Bancas de Qualificação de Doutorado': [], 'Bancas de Graduação': []}
+    all_board_counts = []
+
+    for board in all_board_names:
+        if min_year and max_year != 0:
+            for year in all_boards[board]:
+                if not (int(year) > max_year or int(year) < min_year):
+                    aux_all_boards[board].append(year)
+            all_boards[board] = aux_all_boards[board].copy()
+
+        elif max_year != 0:
+            for year in all_boards[board]:
+                if not int(year) > max_year:
+                    aux_all_boards[board].append(year)
+            all_boards[board] = aux_all_boards[board].copy()
+
+        elif min_year != 0:
+            for year in all_boards[board]:
+                if not int(year) < min_year:
+                    aux_all_boards[board].append(year)
+            all_boards[board] = aux_all_boards[board].copy()
+
+    for board in all_board_names:
+        all_board_counts.append(len(all_boards[board]))
+
     all_board_counts = np.array(all_board_counts)
 
-    for count in all_board_counts:
-        if count == 0:
-            index = all_board_counts.index(count)
-            del all_board_counts[index]
-            del all_board_names[index]
-
     fig1 , ax1 = plt.subplots()
+    if all(item == 0 for item in all_board_counts):
+        return None, None
 
-    ax1.pie(all_board_counts, labels=all_board_names, autopct=lambda x: '{:.0f}'.format(x*all_board_counts.sum()/100), shadow=True, startangle=90)
+    plt.title('Número de Participações por Banca')
+    ax1.pie(all_board_counts, labels=all_board_names, autopct=lambda p: '{:.2f}%\n({:.0f})'.format(p,(p/100)*all_board_counts.sum()), shadow=True, startangle=90)
     ax1.axis('equal')
 
-    return fig1
+    return fig1, all_board_counts
+
 
 def generate_completed_orientations_per_year_graphic(researchers):
     all_orientations_year = np.array(extract_all_completed_orientation_years(researchers))
@@ -142,6 +168,7 @@ def generate_completed_orientations_per_year_graphic(researchers):
     plt.ylabel('Número de Orientações Conlcuidas')
 
     return fig
+
 
 def generate_in_progress_orientations_per_year_graphic(researchers):
     all_orientations_year = np.array(extract_all_in_progress_orientation_years(researchers))
@@ -199,38 +226,22 @@ def extract_all_articles_years(researchers):
 
     return all_articles_years_names
 
-def extract_all_board_quantities(researchers):
-    all_board_quantities = [0, 0, 0, 0]
+def extract_all_boards(researchers):
+    finalBoard = defaultdict(list)
+    listOfBoards = []
 
     if isinstance(researchers, list):
-            for researcher in researchers:
-                for board in researcher.board:
-                    if board == 'Bancas de Mestrado':
-                        all_board_quantities[0] += researcher.board_quantity[researcher.board.index('Bancas de Mestrado')]
+        for researcher in researchers:
+            listOfBoards.append(researcher.board)
 
-                    if board == 'Bancas de Doutorado':
-                        all_board_quantities[1] += researcher.board_quantity[researcher.board.index('Bancas de Doutorado')]
+        dict_items = map(methodcaller('items'), listOfBoards)
+        for k, v in chain.from_iterable(dict_items):
+            finalBoard[k].extend(v)
 
-                    if board == 'Bancas de Exame de Qualificação':
-                        all_board_quantities[2] += researcher.board_quantity[researcher.board.index('Bancas de Exame de Qualificação')]
+        return finalBoard
 
-                    if board == 'Bancas de Graduação':
-                        all_board_quantities[3] += researcher.board_quantity[researcher.board.index('Bancas de Graduação')]
     else:
-        for board in researchers.board:
-            if board == 'Bancas de Mestrado':
-                all_board_quantities[0] += researchers.board_quantity[researchers.board.index('Bancas de Mestrado')]
-
-            if board == 'Bancas de Doutorado':
-                all_board_quantities[1] += researchers.board_quantity[researchers.board.index('Bancas de Doutorado')]
-
-            if board == 'Bancas de Exame de Qualificação':
-                all_board_quantities[2] += researchers.board_quantity[researchers.board.index('Bancas de Exame de Qualificação')]
-
-            if board == 'Bancas de Graduação':
-                all_board_quantities[3] += researchers.board_quantity[researchers.board.index('Bancas de Graduação')]
-
-    return all_board_quantities
+        return researchers.board
 
 def extract_all_completed_orientation_years(researchers):
     all_completed_orientation_names = []

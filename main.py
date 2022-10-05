@@ -35,10 +35,11 @@ if selectedPage == 'Dados Gerais':
     st.text(' ')
     st.text(' ')
 
-    st.header('Participações em Bancas')
-    st.write('Total: ', sum(functions.extract_all_board_quantities(researchers)))
-    boards_piechart = functions.generate_boards_piechart(researchers)
-    st.pyplot(boards_piechart)
+    boards_piechart, board_quantities = functions.generate_boards_piechart(researchers, min_year, max_year)
+    if boards_piechart != None:
+        st.header('Participações em Bancas')
+        st.write('Total: ', sum(board_quantities))
+        st.pyplot(boards_piechart)
 
     st.header('Orientações')
     st.subheader('Orientações Completas')
@@ -80,12 +81,13 @@ else:
                 st.text(' ')
 
             if researcher.board != []:
-                st.header('Participações em Bancas')
-                st.write('Total: ', sum(functions.extract_all_board_quantities(researcher)))
-                boards_piechart = functions.generate_boards_piechart(researcher)
-                st.pyplot(boards_piechart)
-                st.text(' ')
-                st.text(' ')
+                boards_piechart, board_quantities = functions.generate_boards_piechart(researcher, min_year, max_year)
+                if boards_piechart != None:
+                    st.header('Participações em Bancas')
+                    st.write('Total: ', sum(board_quantities))
+                    st.pyplot(boards_piechart)
+                    st.text(' ')
+                    st.text(' ')
 
             if researcher.completed_orientations or researcher.in_progress_orientations != []:
                 st.header('Orientações')
