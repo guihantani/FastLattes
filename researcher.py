@@ -3,9 +3,8 @@ class Researcher:
     self.name = root.find('DADOS-GERAIS').attrib['NOME-COMPLETO']
     self.works_years = []
     self.articles = []
-    #self.board = []
-    #self.board_quantity = []
     self.board = {'Bancas de Mestrado': [], 'Bancas de Tese de Doutorado': [] ,'Bancas de Qualificação de Doutorado': [], 'Bancas de Graduação': []}
+    self.projects = {'Projetos de Pesquisa': [], 'Projetos de Extensão': [], 'Projetos de Ensino': [], 'Projetos de Desenvolvimento': [], 'Outros Projetos': []}
     self.completed_orientations = []
     self.in_progress_orientations = []
     self.orcid = None
@@ -91,3 +90,27 @@ class Researcher:
       if root.find('DADOS-COMPLEMENTARES').find('ORIENTACOES-EM-ANDAMENTO').find('ORIENTACAO-EM-ANDAMENTO-DE-INICIACAO-CIENTIFICA') != None:
         for orientation in root.find('DADOS-COMPLEMENTARES').find('ORIENTACOES-EM-ANDAMENTO').findall('ORIENTACAO-EM-ANDAMENTO-DE-INICIACAO-CIENTIFICA'):
           self.in_progress_orientations.append(orientation.find('DADOS-BASICOS-DA-ORIENTACAO-EM-ANDAMENTO-DE-INICIACAO-CIENTIFICA').attrib['ANO'])
+
+    # Projects
+    if root.find('DADOS-GERAIS').find('ATUACOES-PROFISSIONAIS') != None:
+      if root.find('DADOS-GERAIS').find('ATUACOES-PROFISSIONAIS').find('ATUACAO-PROFISSIONAL') != None:
+        if root.find('DADOS-GERAIS').find('ATUACOES-PROFISSIONAIS').find('ATUACAO-PROFISSIONAL').find('ATIVIDADES-DE-PARTICIPACAO-EM-PROJETO') != None:
+          for participation in root.find('DADOS-GERAIS').find('ATUACOES-PROFISSIONAIS').find('ATUACAO-PROFISSIONAL').find('ATIVIDADES-DE-PARTICIPACAO-EM-PROJETO').findall('PARTICIPACAO-EM-PROJETO'):
+            for project in participation.findall('PROJETO-DE-PESQUISA'):
+              if project.attrib['NATUREZA'] == 'PESQUISA':
+                self.projects['Projetos de Pesquisa'].append(project.attrib['ANO-INICIO'])
+
+              if project.attrib['NATUREZA'] == 'EXTENSAO':
+                self.projects['Projetos de Extensão'].append(project.attrib['ANO-INICIO'])
+
+              if project.attrib['NATUREZA'] == 'ENSINO':
+                self.projects['Projetos de Ensino'].append(project.attrib['ANO-INICIO'])
+
+              if project.attrib['NATUREZA'] == 'DESENVOLVIMENTO':
+                self.projects['Projetos de Desenvolvimento'].append(project.attrib['ANO-INICIO'])
+
+              if project.attrib['NATUREZA'] == 'OUTRA':
+                self.projects['Outros Projetos'].append(project.attrib['ANO-INICIO'])
+
+              else:
+                self.projects['Outros Projetos'].append(project.attrib['ANO-INICIO'])

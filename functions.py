@@ -66,6 +66,8 @@ def generate_works_per_year_graphic(researchers, min_year, max_year):
         index = unique_all_works_per_year.index(x)
         all_works_per_year_count[index] += 1
 
+    if all_works_per_year_count == []:
+        return None
 
     fig, ax = plt.subplots(figsize=(len(unique_all_works_per_year), max(all_works_per_year_count) * 0.8))
     ax.bar(unique_all_works_per_year, all_works_per_year_count, edgecolor="black")
@@ -116,6 +118,9 @@ def generate_articles_per_year_graphic(researchers, min_year, max_year):
     for x in all_articles_year:
         index = unique_all_articles_per_year.index(x)
         all_articles_per_year_count[index] += 1
+
+    if all_articles_per_year_count == []:
+        return None
 
     fig, ax = plt.subplots(figsize=(len(unique_all_articles_per_year), max(all_articles_per_year_count) * 0.8))
     ax.bar(unique_all_articles_per_year, all_articles_per_year_count, edgecolor="black")
@@ -208,6 +213,9 @@ def generate_completed_orientations_per_year_graphic(researchers, min_year, max_
         index = unique_all_orientations_per_year.index(x)
         all_orientations_per_year_count[index] += 1
 
+    if all_orientations_per_year_count == []:
+        return None
+
     fig, ax = plt.subplots(figsize=(len(unique_all_orientations_per_year), max(all_orientations_per_year_count) * 0.8))
     ax.bar(unique_all_orientations_per_year, all_orientations_per_year_count, edgecolor="black")
     for i in range(len(unique_all_orientations_per_year)):
@@ -258,6 +266,9 @@ def generate_in_progress_orientations_per_year_graphic(researchers, min_year, ma
         index = unique_all_orientations_per_year.index(x)
         all_orientations_per_year_count[index] += 1
 
+    if all_orientations_per_year_count == []:
+        return None
+
     fig, ax = plt.subplots(figsize=(len(unique_all_orientations_per_year), max(all_orientations_per_year_count) * 0.8))
     ax.bar(unique_all_orientations_per_year, all_orientations_per_year_count, edgecolor="black")
     for i in range(len(unique_all_orientations_per_year)):
@@ -267,6 +278,47 @@ def generate_in_progress_orientations_per_year_graphic(researchers, min_year, ma
     plt.ylabel('Número de Orientações em Progresso')
 
     return fig
+
+
+def generate_projects_piechart(researchers, min_year, max_year):
+    all_projects_names = ['Projetos de Pesquisa', 'Projetos de Extensão', 'Projetos de Ensino', 'Projetos de Desenvolvimento', 'Outros Projetos']
+    all_projects = extract_all_projects(researchers)
+    aux_all_projects = {'Projetos de Pesquisa': [], 'Projetos de Extensão': [], 'Projetos de Ensino': [], 'Projetos de Desenvolvimento': [], 'Outros Projetos': []}
+    all_projects_counts = []
+
+    for project in all_projects_names:
+        if min_year and max_year != 0:
+            for year in all_projects[project]:
+                if not (int(year) > max_year or int(year) < min_year):
+                    aux_all_projects[project].append(year)
+            all_projects[project] = aux_all_projects[project].copy()
+
+        elif max_year != 0:
+            for year in all_projects[project]:
+                if not int(year) > max_year:
+                    aux_all_projects[project].append(year)
+            all_projects[project] = aux_all_projects[project].copy()
+
+        elif min_year != 0:
+            for year in all_projects[project]:
+                if not int(year) < min_year:
+                    aux_all_projects[project].append(year)
+            all_projects[project] = aux_all_projects[project].copy()
+
+    for project in all_projects_names:
+        all_projects_counts.append(len(all_projects[project]))
+
+    all_projects_counts = np.array(all_projects_counts)
+
+    fig1 , ax1 = plt.subplots()
+    if all(item == 0 for item in all_projects_counts):
+        return None, None
+
+    plt.title('Número de Participações em Projetos')
+    ax1.pie(all_projects_counts, labels=all_projects_names, autopct=lambda p: '{:.2f}%\n({:.0f})'.format(p,(p/100)*all_projects_counts.sum()), shadow=True, startangle=90)
+    ax1.axis('equal')
+
+    return fig1, all_projects_counts
 
 
 def extract_all_citations(researchers):
@@ -319,6 +371,23 @@ def extract_all_boards(researchers):
     else:
         return researchers.board
 
+
+def extract_all_projects(researchers):
+    final_project = defaultdict(list)
+    list_of_projects = []
+
+    if isinstance(researchers, list):
+        for researcher in researchers:
+            list_of_projects.append(researcher.projects)
+
+        dict_items = map(methodcaller('items'), list_of_projects)
+        for k, v in chain.from_iterable(dict_items):
+            final_project[k].extend(v)
+
+        return final_project
+
+    else:
+        return researchers.projects
 
 def extract_all_completed_orientation_years(researchers):
     all_completed_orientation_names = []
