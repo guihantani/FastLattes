@@ -25,6 +25,7 @@ def initialize_researchers(path):
 
     return researchers
 
+
 def generate_works_per_year_graphic(researchers, min_year, max_year):
     all_works_per_year = np.array(extract_all_works_years(researchers))
     all_works_per_year.sort()
@@ -76,9 +77,33 @@ def generate_works_per_year_graphic(researchers, min_year, max_year):
 
     return fig, len(all_works_per_year)
 
-def generate_articles_per_year_graphic(researchers):
+
+def generate_articles_per_year_graphic(researchers, min_year, max_year):
     all_articles_year = np.array(extract_all_articles_years(researchers))
     all_articles_year.sort()
+    aux_list = []
+
+    all_articles_year = [eval(i) for i in all_articles_year]
+
+    if min_year and max_year != 0:
+        for year in all_articles_year:
+            if not (year > max_year or year < min_year):
+                aux_list.append(year)
+        all_articles_year = aux_list.copy()
+
+    elif max_year != 0:
+        for year in all_articles_year:
+            if not year > max_year:
+                aux_list.append(year)
+        all_articles_year = aux_list.copy()
+
+    elif min_year != 0:
+        for year in all_articles_year:
+            if not year < min_year:
+                aux_list.append(year)
+        all_articles_year = aux_list.copy()
+
+    all_articles_year = [str(i) for i in all_articles_year]
 
     unique_all_articles_per_year = []
     all_articles_per_year_count = []
@@ -101,6 +126,7 @@ def generate_articles_per_year_graphic(researchers):
     plt.ylabel('Número de Artigos')
 
     return fig
+
 
 def generate_boards_piechart(researchers, min_year, max_year):
     all_board_names = ['Bancas de Mestrado', 'Bancas de Tese de Doutorado', 'Bancas de Qualificação de Doutorado', 'Bancas de Graduação']
@@ -143,9 +169,32 @@ def generate_boards_piechart(researchers, min_year, max_year):
     return fig1, all_board_counts
 
 
-def generate_completed_orientations_per_year_graphic(researchers):
+def generate_completed_orientations_per_year_graphic(researchers, min_year, max_year):
     all_orientations_year = np.array(extract_all_completed_orientation_years(researchers))
     all_orientations_year.sort()
+    aux_list = []
+
+    all_orientations_year = [eval(i) for i in all_orientations_year]
+
+    if min_year and max_year != 0:
+        for year in all_orientations_year:
+            if not (year > max_year or year < min_year):
+                aux_list.append(year)
+        all_orientations_year = aux_list.copy()
+
+    elif max_year != 0:
+        for year in all_orientations_year:
+            if not year > max_year:
+                aux_list.append(year)
+        all_orientations_year = aux_list.copy()
+
+    elif min_year != 0:
+        for year in all_orientations_year:
+            if not year < min_year:
+                aux_list.append(year)
+        all_orientations_year = aux_list.copy()
+
+    all_orientations_year = [str(i) for i in all_orientations_year]
 
     unique_all_orientations_per_year = []
     all_orientations_per_year_count = []
@@ -170,9 +219,32 @@ def generate_completed_orientations_per_year_graphic(researchers):
     return fig
 
 
-def generate_in_progress_orientations_per_year_graphic(researchers):
+def generate_in_progress_orientations_per_year_graphic(researchers, min_year, max_year):
     all_orientations_year = np.array(extract_all_in_progress_orientation_years(researchers))
     all_orientations_year.sort()
+    aux_list = []
+
+    all_orientations_year = [eval(i) for i in all_orientations_year]
+
+    if min_year and max_year != 0:
+        for year in all_orientations_year:
+            if not (year > max_year or year < min_year):
+                aux_list.append(year)
+        all_orientations_year = aux_list.copy()
+
+    elif max_year != 0:
+        for year in all_orientations_year:
+            if not year > max_year:
+                aux_list.append(year)
+        all_orientations_year = aux_list.copy()
+
+    elif min_year != 0:
+        for year in all_orientations_year:
+            if not year < min_year:
+                aux_list.append(year)
+        all_orientations_year = aux_list.copy()
+
+    all_orientations_year = [str(i) for i in all_orientations_year]
 
     unique_all_orientations_per_year = []
     all_orientations_per_year_count = []
@@ -196,6 +268,7 @@ def generate_in_progress_orientations_per_year_graphic(researchers):
 
     return fig
 
+
 def extract_all_citations(researchers):
     all_author_names = []
 
@@ -203,6 +276,7 @@ def extract_all_citations(researchers):
         all_author_names.append(researcher.name)
 
     return all_author_names
+
 
 def extract_all_works_years(researchers):
     all_works_years_names = []
@@ -215,6 +289,7 @@ def extract_all_works_years(researchers):
 
     return all_works_years_names
 
+
 def extract_all_articles_years(researchers):
     all_articles_years_names = []
 
@@ -225,6 +300,7 @@ def extract_all_articles_years(researchers):
         all_articles_years_names = researchers.articles
 
     return all_articles_years_names
+
 
 def extract_all_boards(researchers):
     finalBoard = defaultdict(list)
@@ -243,6 +319,7 @@ def extract_all_boards(researchers):
     else:
         return researchers.board
 
+
 def extract_all_completed_orientation_years(researchers):
     all_completed_orientation_names = []
 
@@ -253,6 +330,7 @@ def extract_all_completed_orientation_years(researchers):
         all_completed_orientation_names = researchers.completed_orientations
 
     return all_completed_orientation_names
+
 
 def extract_all_in_progress_orientation_years(researchers):
     all_in_progress_orientation_names = []
