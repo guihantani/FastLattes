@@ -2,6 +2,7 @@ import os
 import functions as functions
 import streamlit as st
 import numpy as np
+from pathlib import Path
 
 cur_path = os.path.dirname(__file__)
 new_path = cur_path + '\lattes'
@@ -16,6 +17,17 @@ st.sidebar.title('Menu')
 selectedPage = st.sidebar.selectbox('Selecione a página', researchers_names)
 min_year = st.sidebar.number_input(label='Ano Mínimo', step = 1, format = "%i")
 max_year = st.sidebar.number_input(label='Ano Máximo', step = 1, format = "%i")
+Files = st.file_uploader(label = "Adicione um Lattes (Tipo Zip)", type=["zip"], accept_multiple_files=True)
+
+if Files:
+    for File in Files:
+        save_folder = os.path.realpath(__file__)[:-7] + 'lattes'
+        save_path = Path(save_folder, File.name)
+        with open(save_path, mode='wb') as w:
+            w.write(File.getvalue())
+        if save_path.exists():
+            st.success(f'Arquivo {File.name} foi salvo com sucesso!')
+    Files = None
 
 
 if selectedPage == 'Dados Gerais':
