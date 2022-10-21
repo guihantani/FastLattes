@@ -1,11 +1,12 @@
 import os
 import functions as functions
 import streamlit as st
-import numpy as np
 from pathlib import Path
+import nltk
 
 cur_path = os.path.dirname(__file__)
 new_path = cur_path + '\lattes'
+nltk.download('stopwords')
 
 researchers = functions.initialize_researchers(new_path)
 researchers_names = functions.extract_all_citations(researchers)
@@ -15,9 +16,14 @@ researchers_names.insert(0, 'Dados Gerais')
 
 st.sidebar.title('Menu')
 selectedPage = st.sidebar.selectbox('Selecione a página', researchers_names)
-min_year = st.sidebar.number_input(label='Ano Mínimo', step = 1, format = "%i")
-max_year = st.sidebar.number_input(label='Ano Máximo', step = 1, format = "%i")
-Files = st.file_uploader(label = "Adicione um Lattes (Tipo Zip)", type=["zip"], accept_multiple_files=True)
+min_year = st.sidebar.number_input(label='Ano Mínimo (Inserir 0 para resetar)', step = 1, format = "%i")
+max_year = st.sidebar.number_input(label='Ano Máximo (Inserir 0 para resetar)', step = 1, format = "%i")
+st.sidebar.text(' ')
+st.sidebar.text(' ')
+generate_word_cloud = st.sidebar.checkbox('Gerar Nuvem de Palavras (Torna o programa mais lento)')
+st.sidebar.text(' ')
+st.sidebar.text(' ')
+Files = st.sidebar.file_uploader(label = "Adicione Múltiplos Lattes (Tipo Zip)", type=["zip"], accept_multiple_files=True)
 
 if Files:
     for File in Files:
@@ -38,22 +44,21 @@ if selectedPage == 'Dados Gerais':
         st.write('Total: ', works_per_years_result[1])
         works_per_years_graphic = works_per_years_result[0]
         st.pyplot(works_per_years_graphic)
-        st.text(' ')
-        st.text(' ')
+        st.header(' ')
 
     articles_years_graphic = functions.generate_articles_per_year_graphic(researchers, min_year, max_year)
     if articles_years_graphic != None:
         st.header('Artigos')
         st.write('Total: ', len(functions.extract_all_articles_years(researchers)))
         st.pyplot(articles_years_graphic)
-        st.text(' ')
-        st.text(' ')
+        st.header(' ')
 
     boards_piechart, board_quantities = functions.generate_boards_piechart(researchers, min_year, max_year)
     if boards_piechart != None:
         st.header('Participações em Bancas')
         st.write('Total: ', sum(board_quantities))
         st.pyplot(boards_piechart)
+        st.header(' ')
 
     st.header('Orientações')
     completed_orientations_graphic = functions.generate_completed_orientations_per_year_graphic(researchers, min_year,max_year)
@@ -68,16 +73,14 @@ if selectedPage == 'Dados Gerais':
         st.subheader('Orientações Em Progresso')
         st.write('Total: ', len(functions.extract_all_in_progress_orientation_years(researchers)))
         st.pyplot(in_progress_orientations_graphic)
-        st.text(' ')
-        st.text(' ')
+        st.header(' ')
 
     projects_piechart, project_quantities = functions.generate_projects_piechart(researchers, min_year, max_year)
     if projects_piechart != None:
         st.header('Participações em Projetos')
         st.write('Total: ', sum(project_quantities))
         st.pyplot(projects_piechart)
-        st.text(' ')
-        st.text(' ')
+        st.header(' ')
 
 
 else:
@@ -89,22 +92,25 @@ else:
             st.write('Instituição: ', researcher.institution)
             st.text(' ')
 
+            if researcher.words != None and generate_word_cloud == True:
+                st.header('Nuvem de Palavras')
+                st.pyplot(functions.generate_word_cloud(researcher))
+                st.header(' ')
+
             if researcher.works_years != []:
                 st.header('Trabalhos em Eventos')
                 works_per_years_result = functions.generate_works_per_year_graphic(researcher, min_year, max_year)
                 st.write('Total: ', works_per_years_result[1])
                 works_per_years_graphic = works_per_years_result[0]
                 st.pyplot(works_per_years_graphic)
-                st.text(' ')
-                st.text(' ')
+                st.header(' ')
 
             if researcher.articles != []:
                 st.header('Artigos')
                 st.write('Total: ', len(researcher.articles))
                 articles_years_graphic = functions.generate_articles_per_year_graphic(researcher, min_year,max_year)
                 st.pyplot(articles_years_graphic)
-                st.text(' ')
-                st.text(' ')
+                st.header(' ')
 
             if researcher.board != []:
                 boards_piechart, board_quantities = functions.generate_boards_piechart(researcher, min_year, max_year)
@@ -112,8 +118,7 @@ else:
                     st.header('Participações em Bancas')
                     st.write('Total: ', sum(board_quantities))
                     st.pyplot(boards_piechart)
-                    st.text(' ')
-                    st.text(' ')
+                    st.header(' ')
 
             if researcher.completed_orientations or researcher.in_progress_orientations != []:
                 st.header('Orientações')
@@ -128,8 +133,7 @@ else:
                     st.write('Total: ', len(functions.extract_all_in_progress_orientation_years(researchers)))
                     in_progress_orientations_graphic = functions.generate_in_progress_orientations_per_year_graphic(researchers, min_year,max_year)
                     st.pyplot(in_progress_orientations_graphic)
-                    st.text(' ')
-                    st.text(' ')
+                    st.header(' ')
 
             if researcher.projects != []:
                 projects_piechart, project_quantities = functions.generate_projects_piechart(researcher, min_year,max_year)
@@ -137,5 +141,4 @@ else:
                     st.header('Participações em Projetos')
                     st.write('Total: ', sum(project_quantities))
                     st.pyplot(projects_piechart)
-                    st.text(' ')
-                    st.text(' ')
+                    st.header(' ')

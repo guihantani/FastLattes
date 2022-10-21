@@ -1,12 +1,15 @@
 import os
 import xml.etree.ElementTree as ET
 from zipfile import ZipFile
+import wordcloud
 from researcher import Researcher
 import matplotlib.pyplot as plt
 import numpy as np
 from collections import defaultdict
 from itertools import chain
 from operator import methodcaller
+from wordcloud import WordCloud
+import nltk
 
 def initialize_researchers(path):
     name_of_all_zip_files = os.listdir(path + '/.')
@@ -24,7 +27,6 @@ def initialize_researchers(path):
         os.remove(file_path)  # remove unzip file
 
     return researchers
-
 
 def generate_works_per_year_graphic(researchers, min_year, max_year):
     all_works_per_year = np.array(extract_all_works_years(researchers))
@@ -320,6 +322,27 @@ def generate_projects_piechart(researchers, min_year, max_year):
 
     return fig1, all_projects_counts
 
+def generate_word_cloud(researcher):
+    fig1, ax1 = plt.subplots()
+    portuguese_stop_words = list(nltk.corpus.stopwords.words('portuguese'))
+    english_stop_words = list(wordcloud.STOPWORDS)
+    stop_words = portuguese_stop_words + english_stop_words
+    word_cloud = WordCloud(
+        width=3000,
+        height=2000,
+        random_state=1,
+        background_color="salmon",
+        colormap="Pastel1",
+        collocations=False,
+        stopwords=stop_words,
+        min_word_length=2
+    ).generate(researcher.words)
+
+    plt.title('Nuvem de Palavra de todos os Trabalhos e Artigos')
+    plt.imshow(word_cloud)
+    plt.axis("off")
+
+    return fig1
 
 def extract_all_citations(researchers):
     all_author_names = []

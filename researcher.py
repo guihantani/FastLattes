@@ -10,16 +10,25 @@ class Researcher:
     self.orcid = None
     self.address = None
     self.institution = None
+    self.words = None
 
     #Works in events
     if root.find('PRODUCAO-BIBLIOGRAFICA').find('TRABALHOS-EM-EVENTOS') != None:
       for work_year in root.find('PRODUCAO-BIBLIOGRAFICA').find('TRABALHOS-EM-EVENTOS').findall('TRABALHO-EM-EVENTOS'):
         self.works_years.append(work_year.find('DADOS-BASICOS-DO-TRABALHO').attrib['ANO-DO-TRABALHO'])
+        if self.words == None:
+          self.words = work_year.find('DADOS-BASICOS-DO-TRABALHO').attrib['TITULO-DO-TRABALHO']
+        else:
+          self.words = self.words + ' ' + work_year.find('DADOS-BASICOS-DO-TRABALHO').attrib['TITULO-DO-TRABALHO']
 
     #Articles
     if root.find('PRODUCAO-BIBLIOGRAFICA').find('ARTIGOS-PUBLICADOS') != None:
       for work_year in root.find('PRODUCAO-BIBLIOGRAFICA').find('ARTIGOS-PUBLICADOS').findall('ARTIGO-PUBLICADO'):
         self.articles.append(work_year.find('DADOS-BASICOS-DO-ARTIGO').attrib['ANO-DO-ARTIGO'])
+        if self.words == None:
+          self.words = work_year.find('DADOS-BASICOS-DO-ARTIGO').attrib['TITULO-DO-ARTIGO']
+        else:
+          self.words = self.words + ' ' + work_year.find('DADOS-BASICOS-DO-ARTIGO').attrib['TITULO-DO-ARTIGO']
 
     #Orcid
     if 'ORCID-ID' in root.find('DADOS-GERAIS').attrib:
