@@ -71,13 +71,22 @@ def generate_works_per_year_graphic(researchers, min_year, max_year):
     if all_works_per_year_count == []:
         return None
 
-    fig, ax = plt.subplots(figsize=(len(unique_all_works_per_year), max(all_works_per_year_count) * 0.8))
+    fig, ax = plt.subplots(figsize=(len(unique_all_works_per_year)/2, max(all_works_per_year_count) * (len(unique_all_works_per_year) * 0.015)))
     ax.bar(unique_all_works_per_year, all_works_per_year_count, edgecolor="black")
+    fig.patch.set_facecolor((0.14,0.17,0.23))
+    ax.set_facecolor((0.14,0.17,0.23))
+    ax.tick_params(axis='x', colors='white')
+    ax.spines['bottom'].set_color('white')
+    ax.spines['top'].set_color((0.14,0.17,0.23))
+    ax.spines['right'].set_color((0.14,0.17,0.23))
+    ax.spines['left'].set_color((0.14,0.17,0.23))
+    ax.get_yaxis().set_visible(False)
     for i in range(len(unique_all_works_per_year)):
-        ax.text(i, all_works_per_year_count[i], all_works_per_year_count[i], ha="center")
+        ax.text(i, all_works_per_year_count[i] + 0.1, all_works_per_year_count[i], ha="center", color='white')
 
-    plt.xlabel('Anos')
-    plt.ylabel('Número de Trabalhos')
+    fig.autofmt_xdate()
+    plt.xlabel('Anos', color='white')
+
 
     return fig, len(all_works_per_year)
 
@@ -124,13 +133,21 @@ def generate_articles_per_year_graphic(researchers, min_year, max_year):
     if all_articles_per_year_count == []:
         return None
 
-    fig, ax = plt.subplots(figsize=(len(unique_all_articles_per_year), max(all_articles_per_year_count) * 0.8))
+    fig, ax = plt.subplots(figsize=(len(unique_all_articles_per_year)/2, max(all_articles_per_year_count) * (len(unique_all_articles_per_year) * 0.015)))
+    fig.patch.set_facecolor((0.14, 0.17, 0.23))
+    ax.set_facecolor((0.14, 0.17, 0.23))
+    ax.tick_params(axis='x', colors='white')
+    ax.spines['bottom'].set_color('white')
+    ax.spines['top'].set_color((0.14, 0.17, 0.23))
+    ax.spines['right'].set_color((0.14, 0.17, 0.23))
+    ax.spines['left'].set_color((0.14, 0.17, 0.23))
+    ax.get_yaxis().set_visible(False)
     ax.bar(unique_all_articles_per_year, all_articles_per_year_count, edgecolor="black")
     for i in range(len(unique_all_articles_per_year)):
-        ax.text(i, all_articles_per_year_count[i], all_articles_per_year_count[i], ha="center")
+        ax.text(i, all_articles_per_year_count[i] + 0.1, all_articles_per_year_count[i], ha="center", color='white')
 
-    plt.xlabel('Anos')
-    plt.ylabel('Número de Artigos')
+    fig.autofmt_xdate()
+    plt.xlabel('Anos', color='white')
 
     return fig
 
@@ -166,11 +183,13 @@ def generate_boards_piechart(researchers, min_year, max_year):
     all_board_counts = np.array(all_board_counts)
 
     fig1 , ax1 = plt.subplots()
+    fig1.patch.set_facecolor((0.14, 0.17, 0.23))
+    ax1.set_facecolor((0.14, 0.17, 0.23))
     if all(item == 0 for item in all_board_counts):
         return None, None
 
-    plt.title('Número de Participações por Banca')
-    ax1.pie(all_board_counts, labels=all_board_names, autopct=lambda p: '{:.2f}%\n({:.0f})'.format(p,(p/100)*all_board_counts.sum()), shadow=True, startangle=90)
+    plt.title('Número de Participações por Banca', color='white')
+    ax1.pie(all_board_counts, labels=all_board_names, autopct=lambda p: '{:.2f}%\n({:.0f})'.format(p,(p/100)*all_board_counts.sum()), shadow=True, startangle=90, textprops={'color':"w"})
     ax1.axis('equal')
 
     return fig1, all_board_counts
@@ -218,13 +237,21 @@ def generate_completed_orientations_per_year_graphic(researchers, min_year, max_
     if all_orientations_per_year_count == []:
         return None
 
-    fig, ax = plt.subplots(figsize=(len(unique_all_orientations_per_year), max(all_orientations_per_year_count) * 0.8))
+    fig, ax = plt.subplots(figsize=(len(unique_all_orientations_per_year)/2, max(all_orientations_per_year_count) * (len(unique_all_orientations_per_year) * 0.015)))
+    fig.patch.set_facecolor((0.14, 0.17, 0.23))
+    ax.set_facecolor((0.14, 0.17, 0.23))
+    ax.tick_params(axis='x', colors='white')
+    ax.spines['bottom'].set_color('white')
+    ax.spines['top'].set_color((0.14, 0.17, 0.23))
+    ax.spines['right'].set_color((0.14, 0.17, 0.23))
+    ax.spines['left'].set_color((0.14, 0.17, 0.23))
+    ax.get_yaxis().set_visible(False)
     ax.bar(unique_all_orientations_per_year, all_orientations_per_year_count, edgecolor="black")
     for i in range(len(unique_all_orientations_per_year)):
-        ax.text(i, all_orientations_per_year_count[i], all_orientations_per_year_count[i], ha="center")
+        ax.text(i, all_orientations_per_year_count[i] + 0.1, all_orientations_per_year_count[i], ha="center", color='white')
 
-    plt.xlabel('Anos')
-    plt.ylabel('Número de Orientações Conlcuidas')
+    fig.autofmt_xdate()
+    plt.xlabel('Anos', color='white')
 
     return fig
 
@@ -271,13 +298,22 @@ def generate_in_progress_orientations_per_year_graphic(researchers, min_year, ma
     if all_orientations_per_year_count == []:
         return None
 
-    fig, ax = plt.subplots(figsize=(len(unique_all_orientations_per_year), max(all_orientations_per_year_count) * 0.8))
+    fig, ax = plt.subplots(figsize=(len(unique_all_orientations_per_year)/2, max(all_orientations_per_year_count) * (len(unique_all_orientations_per_year) * 0.015)))
+    fig.patch.set_facecolor((0.14, 0.17, 0.23))
+    ax.set_facecolor((0.14, 0.17, 0.23))
+    ax.tick_params(axis='x', colors='white')
+    ax.spines['bottom'].set_color('white')
+    ax.spines['top'].set_color((0.14, 0.17, 0.23))
+    ax.spines['right'].set_color((0.14, 0.17, 0.23))
+    ax.spines['left'].set_color((0.14, 0.17, 0.23))
+    ax.get_yaxis().set_visible(False)
     ax.bar(unique_all_orientations_per_year, all_orientations_per_year_count, edgecolor="black")
     for i in range(len(unique_all_orientations_per_year)):
-        ax.text(i, all_orientations_per_year_count[i], all_orientations_per_year_count[i], ha="center")
+        ax.text(i, all_orientations_per_year_count[i] + 0.1, all_orientations_per_year_count[i], ha="center", color='white')
 
-    plt.xlabel('Anos')
-    plt.ylabel('Número de Orientações em Progresso')
+    fig.autofmt_xdate()
+    plt.xlabel('Anos', color='white')
+
 
     return fig
 
@@ -313,11 +349,13 @@ def generate_projects_piechart(researchers, min_year, max_year):
     all_projects_counts = np.array(all_projects_counts)
 
     fig1 , ax1 = plt.subplots()
+    fig1.patch.set_facecolor((0.14, 0.17, 0.23))
+    ax1.set_facecolor((0.14, 0.17, 0.23))
     if all(item == 0 for item in all_projects_counts):
         return None, None
 
-    plt.title('Número de Participações em Projetos')
-    ax1.pie(all_projects_counts, labels=all_projects_names, autopct=lambda p: '{:.2f}%\n({:.0f})'.format(p,(p/100)*all_projects_counts.sum()), shadow=True, startangle=90)
+    plt.title('Número de Participações em Projetos', color='white')
+    ax1.pie(all_projects_counts, labels=all_projects_names, autopct=lambda p: '{:.2f}%\n({:.0f})'.format(p,(p/100)*all_projects_counts.sum()), shadow=True, startangle=90, textprops={'color':"w"})
     ax1.axis('equal')
 
     return fig1, all_projects_counts

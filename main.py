@@ -60,27 +60,28 @@ if selectedPage == 'Dados Gerais':
         st.pyplot(boards_piechart)
         st.header(' ')
 
-    st.header('Orientações')
-    completed_orientations_graphic = functions.generate_completed_orientations_per_year_graphic(researchers, min_year,max_year)
-    if completed_orientations_graphic != None:
-        st.subheader('Orientações Completas')
-        st.write('Total: ', len(functions.extract_all_completed_orientation_years(researchers)))
-        st.pyplot(completed_orientations_graphic)
-        st.text(' ')
-
+    completed_orientations_graphic = functions.generate_completed_orientations_per_year_graphic(researchers, min_year, max_year)
     in_progress_orientations_graphic = functions.generate_in_progress_orientations_per_year_graphic(researchers,min_year, max_year)
-    if in_progress_orientations_graphic != None:
-        st.subheader('Orientações Em Progresso')
-        st.write('Total: ', len(functions.extract_all_in_progress_orientation_years(researchers)))
-        st.pyplot(in_progress_orientations_graphic)
-        st.header(' ')
+    if completed_orientations_graphic != None or in_progress_orientations_graphic != None:
+        st.header('Orientações')
+        if completed_orientations_graphic != None:
+            st.subheader('Orientações Completas')
+            st.write('Total: ', len(functions.extract_all_completed_orientation_years(researchers)))
+            st.pyplot(completed_orientations_graphic)
+            st.text(' ')
 
-    projects_piechart, project_quantities = functions.generate_projects_piechart(researchers, min_year, max_year)
-    if projects_piechart != None:
-        st.header('Participações em Projetos')
-        st.write('Total: ', sum(project_quantities))
-        st.pyplot(projects_piechart)
-        st.header(' ')
+        if in_progress_orientations_graphic != None:
+            st.subheader('Orientações Em Progresso')
+            st.write('Total: ', len(functions.extract_all_in_progress_orientation_years(researchers)))
+            st.pyplot(in_progress_orientations_graphic)
+            st.header(' ')
+
+        projects_piechart, project_quantities = functions.generate_projects_piechart(researchers, min_year, max_year)
+        if projects_piechart != None:
+            st.header('Participações em Projetos')
+            st.write('Total: ', sum(project_quantities))
+            st.pyplot(projects_piechart)
+            st.header(' ')
 
 
 else:
@@ -97,48 +98,46 @@ else:
                 st.pyplot(functions.generate_word_cloud(researcher))
                 st.header(' ')
 
-            if researcher.works_years != []:
+            researcher_works_per_years_result = functions.generate_works_per_year_graphic(researcher, min_year, max_year)
+            if researcher_works_per_years_result != None:
                 st.header('Trabalhos em Eventos')
-                works_per_years_result = functions.generate_works_per_year_graphic(researcher, min_year, max_year)
-                st.write('Total: ', works_per_years_result[1])
-                works_per_years_graphic = works_per_years_result[0]
+                st.write('Total: ', researcher_works_per_years_result[1])
+                works_per_years_graphic = researcher_works_per_years_result[0]
                 st.pyplot(works_per_years_graphic)
                 st.header(' ')
 
-            if researcher.articles != []:
+            researcher_articles_years_graphic = functions.generate_articles_per_year_graphic(researcher, min_year, max_year)
+            if researcher_articles_years_graphic != None:
                 st.header('Artigos')
                 st.write('Total: ', len(researcher.articles))
-                articles_years_graphic = functions.generate_articles_per_year_graphic(researcher, min_year,max_year)
-                st.pyplot(articles_years_graphic)
+                st.pyplot(researcher_articles_years_graphic)
                 st.header(' ')
 
-            if researcher.board != []:
-                boards_piechart, board_quantities = functions.generate_boards_piechart(researcher, min_year, max_year)
-                if boards_piechart != None:
-                    st.header('Participações em Bancas')
-                    st.write('Total: ', sum(board_quantities))
-                    st.pyplot(boards_piechart)
-                    st.header(' ')
+            researcher_boards_piechart, researcher_board_quantities = functions.generate_boards_piechart(researcher, min_year, max_year)
+            if researcher_boards_piechart != None:
+                st.header('Participações em Bancas')
+                st.write('Total: ', sum(researcher_board_quantities))
+                st.pyplot(researcher_boards_piechart)
+                st.header(' ')
 
-            if researcher.completed_orientations or researcher.in_progress_orientations != []:
+            researcher_completed_orientations_graphic = functions.generate_completed_orientations_per_year_graphic(researcher, min_year, max_year)
+            researcher_in_progress_orientations_graphic = functions.generate_in_progress_orientations_per_year_graphic(researcher, min_year, max_year)
+            if researcher_completed_orientations_graphic != None or researcher_in_progress_orientations_graphic != None:
                 st.header('Orientações')
-                if researcher.completed_orientations != []:
+                if researcher_completed_orientations_graphic != None:
                     st.subheader('Orientações Completas')
                     st.write('Total: ', len(functions.extract_all_completed_orientation_years(researcher)))
-                    completed_orientations_graphic = functions.generate_completed_orientations_per_year_graphic(researcher, min_year,max_year)
-                    st.pyplot(completed_orientations_graphic)
+                    st.pyplot(researcher_completed_orientations_graphic)
                     st.text(' ')
-                if researcher.in_progress_orientations != []:
+                if researcher_in_progress_orientations_graphic != None:
                     st.subheader('Orientações Em Progresso')
                     st.write('Total: ', len(functions.extract_all_in_progress_orientation_years(researchers)))
-                    in_progress_orientations_graphic = functions.generate_in_progress_orientations_per_year_graphic(researchers, min_year,max_year)
-                    st.pyplot(in_progress_orientations_graphic)
+                    st.pyplot(researcher_in_progress_orientations_graphic)
                     st.header(' ')
 
-            if researcher.projects != []:
-                projects_piechart, project_quantities = functions.generate_projects_piechart(researcher, min_year,max_year)
-                if projects_piechart != None:
-                    st.header('Participações em Projetos')
-                    st.write('Total: ', sum(project_quantities))
-                    st.pyplot(projects_piechart)
-                    st.header(' ')
+            researcher_projects_piechart, researcher_project_quantities = functions.generate_projects_piechart(researcher, min_year,max_year)
+            if researcher_projects_piechart != None:
+                st.header('Participações em Projetos')
+                st.write('Total: ', sum(researcher_project_quantities))
+                st.pyplot(researcher_projects_piechart)
+                st.header(' ')
