@@ -1,6 +1,7 @@
 class Researcher:
-  def __init__(self, root):
+  def __init__(self, root, file):
     self.name = root.find('DADOS-GERAIS').attrib['NOME-COMPLETO']
+    self.file_name = file
     self.works_years = []
     self.articles = []
     self.board = {'Bancas de Mestrado': [], 'Bancas de Tese de Doutorado': [] ,'Bancas de Qualificação de Doutorado': [], 'Bancas de Graduação': []}

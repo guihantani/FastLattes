@@ -32,12 +32,18 @@ if Files:
         with open(save_path, mode='wb') as w:
             w.write(File.getvalue())
         if save_path.exists():
-            st.success(f'Arquivo {File.name} foi salvo com sucesso!')
+            st.success(f'Arquivo {File.name} foi salvo com sucesso! (Atualize a página)')
     Files = None
 
 
 if selectedPage == 'Dados Gerais':
     st.title('Dados Gerais')
+    if researchers != [] and generate_word_cloud == True:
+        st.header('Nuvem de Palavras')
+        with st.spinner('Gerando a Nuvem de Palavras, por favor aguarde...'):
+            st.pyplot(functions.generate_word_cloud(researchers))
+        st.header(' ')
+
     works_per_years_result = functions.generate_works_per_year_graphic(researchers, min_year, max_year)
     if works_per_years_result != None:
         st.header('Trabalhos em Eventos')
@@ -91,11 +97,15 @@ else:
             st.write('ID ORCID: ', researcher.orcid)
             st.write('Endereço: ', researcher.address)
             st.write('Instituição: ', researcher.institution)
+            if st.button('Deletar Pesquisador'):
+                functions.delete_researcher_file(researcher, new_path)
+                st.experimental_rerun()
             st.text(' ')
 
             if researcher.words != None and generate_word_cloud == True:
                 st.header('Nuvem de Palavras')
-                st.pyplot(functions.generate_word_cloud(researcher))
+                with st.spinner('Gerando a Nuvem de Palavras, por favor aguarde...'):
+                    st.pyplot(functions.generate_word_cloud(researcher))
                 st.header(' ')
 
             researcher_works_per_years_result = functions.generate_works_per_year_graphic(researcher, min_year, max_year)

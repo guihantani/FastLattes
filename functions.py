@@ -22,11 +22,16 @@ def initialize_researchers(path):
 
         file_path = path + '/curriculo.xml'
         xml = ET.parse(file_path).getroot()  # load file
-        r = Researcher(xml)
+        r = Researcher(xml, file)
         researchers.append(r)
         os.remove(file_path)  # remove unzip file
 
     return researchers
+
+def delete_researcher_file(researcher, path):
+    file_path = path + '/' + researcher.file_name
+    print(file_path)
+    os.remove(file_path)
 
 def generate_works_per_year_graphic(researchers, min_year, max_year):
     all_works_per_year = np.array(extract_all_works_years(researchers))
@@ -360,21 +365,38 @@ def generate_projects_piechart(researchers, min_year, max_year):
 
     return fig1, all_projects_counts
 
-def generate_word_cloud(researcher):
+def generate_word_cloud(researchers):
     fig1, ax1 = plt.subplots()
+    researchers_words = ' '
     portuguese_stop_words = list(nltk.corpus.stopwords.words('portuguese'))
     english_stop_words = list(wordcloud.STOPWORDS)
     stop_words = portuguese_stop_words + english_stop_words
-    word_cloud = WordCloud(
-        width=3000,
-        height=2000,
-        random_state=1,
-        background_color="salmon",
-        colormap="Pastel1",
-        collocations=False,
-        stopwords=stop_words,
-        min_word_length=2
-    ).generate(researcher.words)
+
+    if type(researchers) == list:
+        for researcher in researchers:
+            if researcher.words != None:
+                researchers_words = researchers_words + researcher.words + ' '
+        word_cloud = WordCloud(
+            width=3000,
+            height=2000,
+            random_state=1,
+            background_color="salmon",
+            colormap="Pastel1",
+            collocations=False,
+            stopwords=stop_words,
+            min_word_length=2
+        ).generate(researchers_words)
+    else:
+        word_cloud = WordCloud(
+            width=3000,
+            height=2000,
+            random_state=1,
+            background_color="salmon",
+            colormap="Pastel1",
+            collocations=False,
+            stopwords=stop_words,
+            min_word_length=2
+        ).generate(researchers.words)
 
     plt.title('Nuvem de Palavra de todos os Trabalhos e Artigos')
     plt.imshow(word_cloud)
