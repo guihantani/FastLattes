@@ -76,6 +76,7 @@ def generate_works_per_year_graphic(researchers, min_year, max_year):
     if all_works_per_year_count == []:
         return None
 
+
     fig, ax = plt.subplots(figsize=(len(unique_all_works_per_year)/2, max(all_works_per_year_count) * (len(unique_all_works_per_year) * 0.015)))
     ax.bar(unique_all_works_per_year, all_works_per_year_count, edgecolor="black")
     fig.patch.set_facecolor((0.14,0.17,0.23))
@@ -90,6 +91,8 @@ def generate_works_per_year_graphic(researchers, min_year, max_year):
         ax.text(i, all_works_per_year_count[i] + 0.1, all_works_per_year_count[i], ha="center", color='white')
 
     fig.autofmt_xdate()
+    fig.set_figwidth(len(unique_all_works_per_year)/2)
+    fig.set_figheight(len(unique_all_works_per_year)/3)
     plt.xlabel('Anos', color='white')
 
 
@@ -138,6 +141,7 @@ def generate_articles_per_year_graphic(researchers, min_year, max_year):
     if all_articles_per_year_count == []:
         return None
 
+
     fig, ax = plt.subplots(figsize=(len(unique_all_articles_per_year)/2, max(all_articles_per_year_count) * (len(unique_all_articles_per_year) * 0.015)))
     fig.patch.set_facecolor((0.14, 0.17, 0.23))
     ax.set_facecolor((0.14, 0.17, 0.23))
@@ -152,6 +156,8 @@ def generate_articles_per_year_graphic(researchers, min_year, max_year):
         ax.text(i, all_articles_per_year_count[i] + 0.1, all_articles_per_year_count[i], ha="center", color='white')
 
     fig.autofmt_xdate()
+    fig.set_figwidth(len(unique_all_articles_per_year) / 2)
+    fig.set_figheight(len(unique_all_articles_per_year) / 3)
     plt.xlabel('Anos', color='white')
 
     return fig
@@ -242,6 +248,7 @@ def generate_completed_orientations_per_year_graphic(researchers, min_year, max_
     if all_orientations_per_year_count == []:
         return None
 
+
     fig, ax = plt.subplots(figsize=(len(unique_all_orientations_per_year)/2, max(all_orientations_per_year_count) * (len(unique_all_orientations_per_year) * 0.015)))
     fig.patch.set_facecolor((0.14, 0.17, 0.23))
     ax.set_facecolor((0.14, 0.17, 0.23))
@@ -256,6 +263,8 @@ def generate_completed_orientations_per_year_graphic(researchers, min_year, max_
         ax.text(i, all_orientations_per_year_count[i] + 0.1, all_orientations_per_year_count[i], ha="center", color='white')
 
     fig.autofmt_xdate()
+    fig.set_figwidth(len(unique_all_orientations_per_year) / 2)
+    fig.set_figheight(len(unique_all_orientations_per_year) / 3)
     plt.xlabel('Anos', color='white')
 
     return fig
@@ -317,6 +326,8 @@ def generate_in_progress_orientations_per_year_graphic(researchers, min_year, ma
         ax.text(i, all_orientations_per_year_count[i] + 0.1, all_orientations_per_year_count[i], ha="center", color='white')
 
     fig.autofmt_xdate()
+    fig.set_figwidth(len(unique_all_orientations_per_year) / 2)
+    fig.set_figheight(len(unique_all_orientations_per_year) / 3)
     plt.xlabel('Anos', color='white')
 
 
@@ -371,6 +382,14 @@ def generate_word_cloud(researchers):
     portuguese_stop_words = list(nltk.corpus.stopwords.words('portuguese'))
     english_stop_words = list(wordcloud.STOPWORDS)
     stop_words = portuguese_stop_words + english_stop_words
+
+    '''
+    stop_words.append('based')
+    stop_words.append('using')
+    stop_words.append('use')
+    stop_words.append('baseado')
+    stop_words.append('usando')
+    '''
 
     if type(researchers) == list:
         for researcher in researchers:
