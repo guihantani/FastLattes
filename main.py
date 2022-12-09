@@ -141,7 +141,7 @@ else:
                     st.text(' ')
                 if researcher_in_progress_orientations_graphic != None:
                     st.subheader('Orientações Em Progresso')
-                    st.write('Total: ', len(functions.extract_all_in_progress_orientation_years(researchers)))
+                    st.write('Total: ', len(functions.extract_all_in_progress_orientation_years(researcher)))
                     st.pyplot(researcher_in_progress_orientations_graphic)
                     st.header(' ')
 
