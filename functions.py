@@ -383,13 +383,13 @@ def generate_word_cloud(researchers):
     english_stop_words = list(wordcloud.STOPWORDS)
     stop_words = portuguese_stop_words + english_stop_words
 
-    '''
+
     stop_words.append('based')
     stop_words.append('using')
     stop_words.append('use')
     stop_words.append('baseado')
     stop_words.append('usando')
-    '''
+
 
     if type(researchers) == list:
         for researcher in researchers:
