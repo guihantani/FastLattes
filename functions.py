@@ -164,9 +164,9 @@ def generate_articles_per_year_graphic(researchers, min_year, max_year):
 
 
 def generate_boards_piechart(researchers, min_year, max_year):
-    all_board_names = ['Bancas de Mestrado', 'Bancas de Tese de Doutorado', 'Bancas de Qualificação de Doutorado', 'Bancas de Graduação']
+    all_board_names = ['Bancas de Mestrado', 'Bancas de Tese de Doutorado', 'Bancas de Qualificação de Mestrado', 'Bancas de Qualificação de Doutorado', 'Bancas de Graduação']
     all_boards = extract_all_boards(researchers)
-    aux_all_boards = {'Bancas de Mestrado': [], 'Bancas de Tese de Doutorado': [] ,'Bancas de Qualificação de Doutorado': [], 'Bancas de Graduação': []}
+    aux_all_boards = {'Bancas de Mestrado': [], 'Bancas de Tese de Doutorado': [] ,'Bancas de Qualificação de Mestrado': [],'Bancas de Qualificação de Doutorado': [], 'Bancas de Graduação': []}
     all_board_counts = []
 
     for board in all_board_names:
@@ -192,6 +192,18 @@ def generate_boards_piechart(researchers, min_year, max_year):
         all_board_counts.append(len(all_boards[board]))
 
     all_board_counts = np.array(all_board_counts)
+
+    aux_all_board_names = all_board_names.copy()
+    aux_all_board_counts = all_board_counts.copy()
+
+    for project_name in all_board_names:
+        if aux_all_board_counts[aux_all_board_names.index(project_name)] == 0:
+            aux = aux_all_board_names.index(project_name)
+            aux_all_board_counts = np.delete(aux_all_board_counts, aux)
+            aux_all_board_names.pop(aux)
+
+    all_board_names = aux_all_board_names.copy()
+    all_board_counts = aux_all_board_counts.copy()
 
     fig1 , ax1 = plt.subplots()
     fig1.patch.set_facecolor((0.14, 0.17, 0.23))
@@ -364,14 +376,27 @@ def generate_projects_piechart(researchers, min_year, max_year):
 
     all_projects_counts = np.array(all_projects_counts)
 
+    aux_all_projects_names = all_projects_names.copy()
+    aux_all_projects_counts = all_projects_counts.copy()
+
+    for project_name in all_projects_names:
+        if aux_all_projects_counts[aux_all_projects_names.index(project_name)] == 0:
+            aux = aux_all_projects_names.index(project_name)
+            aux_all_projects_counts = np.delete(aux_all_projects_counts, aux)
+            aux_all_projects_names.pop(aux)
+
+    all_projects_names = aux_all_projects_names.copy()
+    all_projects_counts = aux_all_projects_counts.copy()
+
     fig1 , ax1 = plt.subplots()
     fig1.patch.set_facecolor((0.14, 0.17, 0.23))
     ax1.set_facecolor((0.14, 0.17, 0.23))
     if all(item == 0 for item in all_projects_counts):
         return None, None
 
+
     plt.title('Número de Participações em Projetos', color='white')
-    ax1.pie(all_projects_counts, labels=all_projects_names, autopct=lambda p: '{:.2f}%\n({:.0f})'.format(p,(p/100)*all_projects_counts.sum()), shadow=True, startangle=90, textprops={'color':"w"})
+    ax1.pie(all_projects_counts, labels=all_projects_names, autopct=lambda p: '{:.2f}%\n({:.0f})'.format(p,(p/100)*all_projects_counts.sum()) if p > 0 else '', shadow=True, startangle=90, textprops={'color':"w"})
     ax1.axis('equal')
 
     return fig1, all_projects_counts

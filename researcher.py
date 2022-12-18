@@ -4,7 +4,7 @@ class Researcher:
     self.file_name = file
     self.works_years = []
     self.articles = []
-    self.board = {'Bancas de Mestrado': [], 'Bancas de Tese de Doutorado': [] ,'Bancas de Qualificação de Doutorado': [], 'Bancas de Graduação': []}
+    self.board = {'Bancas de Mestrado': [], 'Bancas de Tese de Doutorado': [] ,'Bancas de Qualificação de Mestrado': [], 'Bancas de Qualificação de Doutorado': [], 'Bancas de Graduação': []}
     self.projects = {'Projetos de Pesquisa': [], 'Projetos de Extensão': [], 'Projetos de Ensino': [], 'Projetos de Desenvolvimento': [], 'Outros Projetos': []}
     self.completed_orientations = []
     self.in_progress_orientations = []
@@ -67,7 +67,10 @@ class Researcher:
 
       if root.find('DADOS-COMPLEMENTARES').find('PARTICIPACAO-EM-BANCA-TRABALHOS-CONCLUSAO').find('PARTICIPACAO-EM-BANCA-DE-EXAME-QUALIFICACAO') != None:
         for participation_board in root.find('DADOS-COMPLEMENTARES').find('PARTICIPACAO-EM-BANCA-TRABALHOS-CONCLUSAO').findall('PARTICIPACAO-EM-BANCA-DE-EXAME-QUALIFICACAO'):
-          self.board['Bancas de Qualificação de Doutorado'].append(participation_board.find('DADOS-BASICOS-DA-PARTICIPACAO-EM-BANCA-DE-EXAME-QUALIFICACAO').attrib['ANO'])
+          if participation_board.find('DADOS-BASICOS-DA-PARTICIPACAO-EM-BANCA-DE-EXAME-QUALIFICACAO').attrib['NATUREZA'] == 'Exame de qualificação de mestrado':
+            self.board['Bancas de Qualificação de Mestrado'].append(participation_board.find('DADOS-BASICOS-DA-PARTICIPACAO-EM-BANCA-DE-EXAME-QUALIFICACAO').attrib['ANO'])
+          elif participation_board.find('DADOS-BASICOS-DA-PARTICIPACAO-EM-BANCA-DE-EXAME-QUALIFICACAO').attrib['NATUREZA'] == 'Exame de qualificação de doutorado':
+            self.board['Bancas de Qualificação de Doutorado'].append(participation_board.find('DADOS-BASICOS-DA-PARTICIPACAO-EM-BANCA-DE-EXAME-QUALIFICACAO').attrib['ANO'])
 
       if root.find('DADOS-COMPLEMENTARES').find('PARTICIPACAO-EM-BANCA-TRABALHOS-CONCLUSAO').find('PARTICIPACAO-EM-BANCA-DE-GRADUACAO') != None:
         for participation_board in root.find('DADOS-COMPLEMENTARES').find('PARTICIPACAO-EM-BANCA-TRABALHOS-CONCLUSAO').findall('PARTICIPACAO-EM-BANCA-DE-GRADUACAO'):
@@ -104,23 +107,24 @@ class Researcher:
     # Projects
     if root.find('DADOS-GERAIS').find('ATUACOES-PROFISSIONAIS') != None:
       if root.find('DADOS-GERAIS').find('ATUACOES-PROFISSIONAIS').find('ATUACAO-PROFISSIONAL') != None:
-        if root.find('DADOS-GERAIS').find('ATUACOES-PROFISSIONAIS').find('ATUACAO-PROFISSIONAL').find('ATIVIDADES-DE-PARTICIPACAO-EM-PROJETO') != None:
-          for participation in root.find('DADOS-GERAIS').find('ATUACOES-PROFISSIONAIS').find('ATUACAO-PROFISSIONAL').find('ATIVIDADES-DE-PARTICIPACAO-EM-PROJETO').findall('PARTICIPACAO-EM-PROJETO'):
-            for project in participation.findall('PROJETO-DE-PESQUISA'):
-              if project.attrib['NATUREZA'] == 'PESQUISA':
-                self.projects['Projetos de Pesquisa'].append(project.attrib['ANO-INICIO'])
+        for professional in root.find('DADOS-GERAIS').find('ATUACOES-PROFISSIONAIS').findall('ATUACAO-PROFISSIONAL'):
+          if professional.find('ATIVIDADES-DE-PARTICIPACAO-EM-PROJETO') != None:
+            for participation in professional.find('ATIVIDADES-DE-PARTICIPACAO-EM-PROJETO').findall('PARTICIPACAO-EM-PROJETO'):
+              for project in participation.findall('PROJETO-DE-PESQUISA'):
+                if project.attrib['NATUREZA'] == 'PESQUISA':
+                  self.projects['Projetos de Pesquisa'].append(project.attrib['ANO-INICIO'])
 
-              if project.attrib['NATUREZA'] == 'EXTENSAO':
-                self.projects['Projetos de Extensão'].append(project.attrib['ANO-INICIO'])
+                elif project.attrib['NATUREZA'] == 'EXTENSAO':
+                  self.projects['Projetos de Extensão'].append(project.attrib['ANO-INICIO'])
 
-              if project.attrib['NATUREZA'] == 'ENSINO':
-                self.projects['Projetos de Ensino'].append(project.attrib['ANO-INICIO'])
+                elif project.attrib['NATUREZA'] == 'ENSINO':
+                  self.projects['Projetos de Ensino'].append(project.attrib['ANO-INICIO'])
 
-              if project.attrib['NATUREZA'] == 'DESENVOLVIMENTO':
-                self.projects['Projetos de Desenvolvimento'].append(project.attrib['ANO-INICIO'])
+                elif project.attrib['NATUREZA'] == 'DESENVOLVIMENTO':
+                  self.projects['Projetos de Desenvolvimento'].append(project.attrib['ANO-INICIO'])
 
-              if project.attrib['NATUREZA'] == 'OUTRA':
-                self.projects['Outros Projetos'].append(project.attrib['ANO-INICIO'])
+                elif project.attrib['NATUREZA'] == 'OUTRA':
+                  self.projects['Outros Projetos'].append(project.attrib['ANO-INICIO'])
 
-              else:
-                self.projects['Outros Projetos'].append(project.attrib['ANO-INICIO'])
+                else:
+                  self.projects['Outros Projetos'].append(project.attrib['ANO-INICIO'])
